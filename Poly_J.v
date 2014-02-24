@@ -427,12 +427,12 @@ Proof. reflexivity.  Qed.
 
 Definition prod_curry {X Y Z : Type}
   (f : X * Y -> Z) (x : X) (y : Y) : Z := f (x, y).
+Print prod_curry.
 
 (** 練習問題として、その逆の[prod_uncurry]を定義し、二つの関数が互いに逆関数であることを証明しなさい。 *)
 
 Definition prod_uncurry {X Y Z : Type}
-  (f : X -> Y -> Z) (p : X * Y) : Z :=
-  (* FILL IN HERE *) admit.
+  (f : X -> Y -> Z) (p : X * Y) : Z :=  f (fst p) (snd p).
 
 (** (考える練習: 次のコマンドを実行する前に、[prod_curry]と[prod_uncurry]の型を考えなさい。) *)
 
@@ -441,15 +441,14 @@ Check @prod_uncurry.
 
 Theorem uncurry_curry : forall (X Y Z : Type) (f : X -> Y -> Z) x y,
   prod_curry (prod_uncurry f) x y = f x y.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
+
 
 Theorem curry_uncurry : forall (X Y Z : Type)
                                (f : (X * Y) -> Z) (p : X * Y),
   prod_uncurry (prod_curry f) p = f p.
-Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+Proof. destruct p as [x y]. reflexivity. Qed.
+
 
 
 (** ** フィルター (Filter)関数 *)
@@ -514,15 +513,15 @@ Proof. reflexivity.  Qed.
 (** [filter]関数を使い、数値のリストを入力すると、そのうち偶数でなおかつ7より大きい要素だけを取り出す[filter_even_gt7]関数を書きなさい。 *)
 
 Definition filter_even_gt7 (l : list nat) : list nat :=
-  (* FILL IN HERE *) admit.
+  filter( fun n => andb (evenb n) (ble_nat 8 n) ) l.
 
 Example test_filter_even_gt7_1 :
   filter_even_gt7 [1,2,6,9,10,3,12,8] = [10,12,8].
- (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 
 Example test_filter_even_gt7_2 :
   filter_even_gt7 [5,2,6,19,129] = [].
- (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 
 (** [] *)
 
@@ -535,13 +534,13 @@ Example test_filter_even_gt7_2 :
    型[X]について、[X]型の値がある条件を満たすかを調べる述語[X -> bool]と[X]のリスト[list X]を引数に与えると、[partition]関数はリストのペアを返します。ペアの最初の要素は、与えられたリストのうち、条件を満たす要素だけのリストで、二番目の要素は、条件を満たさないもののリストです。二つのリストの要素の順番は、元のリストの順と同じでなければなりません。*)
 
 Definition partition {X : Type} (test : X -> bool) (l : list X)
-                     : list X * list X :=
-(* FILL IN HERE *) admit.
+                     : list X * list X := (filter test l, filter (fun n => negb (test n))l).
 
 Example test_partition1: partition oddb [1,2,3,4,5] = ([1,3,5], [2,4]).
-(* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 Example test_partition2: partition (fun x => false) [5,9,0] = ([], [5,9,0]).
-(* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
+
 (** [] *)
 
 
