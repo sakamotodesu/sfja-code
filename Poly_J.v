@@ -576,10 +576,21 @@ Proof. reflexivity.  Qed.
 (** **** 練習問題: ★★★, optional (map_rev) *)
 (** [map]と[rev]が可換であることを示しなさい。証明には補題をたてて証明する必要があるでしょう。 *)
 
+Lemma snoc_map:
+  forall (X Y : Type) (f:X -> Y) (l:list X) (x:X),
+    map f (snoc l x) = snoc (map f l) (f x).
+Proof.
+  induction l as [|x' l'].
+  Case "l = []". reflexivity.
+  Case "l = x' :: l'".
+    simpl. intros x. rewrite <- IHl'.
+    reflexivity. Qed.
+
 Theorem map_rev : forall (X Y : Type) (f : X -> Y) (l : list X),
   map f (rev l) = rev (map f l).
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. simpl. induction l as [|n l']. 
+  simpl. reflexivity.
+  simpl. rewrite -> snoc_map. rewrite -> IHl'.  reflexivity. Qed.
 (** [] *)
 
 (** **** 練習問題: ★★, recommended (flat_map) *)
@@ -592,12 +603,15 @@ Proof.
 
 Fixpoint flat_map {X Y:Type} (f:X -> list Y) (l:list X)
                    : (list Y) :=
-  (* FILL IN HERE *) admit.
+  match l with
+  | [] => []
+  | h :: t => app  (f h)  (flat_map f t)
+  end.
 
 Example test_flat_map1:
   flat_map (fun n => [n,n,n]) [1,5,4]
   = [1, 1, 1, 5, 5, 5, 4, 4, 4].
- (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 (** [] *)
 
 (** リストは、[map]関数のような関数に渡すことができる、帰納的に定義された唯一の型、というわけではありません。次の定義は、[option]型のために[map]関数を定義したものです。 *)
