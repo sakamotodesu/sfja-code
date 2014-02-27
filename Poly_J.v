@@ -705,10 +705,11 @@ Proof. reflexivity. Qed.
 (** **** 練習問題: ★ (override_example) *)
 (** 次の証明にとりかかる前に、あなたがこの証明の意味することを理解しているか確認するため、証明内容を別の言葉で言い換えてください。証明自体は単純なものです。 *)
 
+(** 説明： override にk = 3, x = trueが渡されている。よってoverrideが生成した関数に渡されるk'が3であればx=trueが、3以外であればconstfun bの戻り値=bが返ってくる。ここではk'=2なので必ずbが返ってくる。 **)
 Theorem override_example : forall (b:bool),
   (override (constfun b) 3 true) 2 = b.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
+
 (** [] *)
 
 (** このコースでこれ以降、関数のオーバーライド（上書き）がよく登場しますが、この性質について多くを知る必要はありません。しかし、これらの性質を証明するには、さらにいくつかのCoqのタクティックを知らなければなりません。それが、この章の残りの部分の主なトピックになります。 *)
@@ -758,8 +759,9 @@ Theorem override_neq : forall {X:Type} x1 x2 k1 k2 (f : nat->X),
   f k1 = x1 ->
   beq_nat k2 k1 = false ->
   (override f k2 x2) k1 = x1.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. intros x1 x2 k1 k2 f e1 e2 e3.
+  unfold override. rewrite -> e3. apply e2. Qed.
+
 (** [] *)
 
 (** [unfold]の逆の機能として、Coqには[fold]というタクティックも用意されています。これは、展開された定義を元に戻してくれますが、あまり使われることはありません。 *)
