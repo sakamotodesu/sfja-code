@@ -1164,9 +1164,7 @@ intros s. induction s as [| n l].
    バッグについて [count] と [sum] を使った定理を考え、それを証明しなさい。
    *)
 
-Print sum.
-Print count.
-SearchAbout nat.
+
 Lemma count_plus_0_r: forall(l :bag), count 0 l + 0 = count 0 l.
 Proof.
 intros l. induction l as [| n l'].

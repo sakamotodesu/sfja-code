@@ -823,8 +823,7 @@ Example sillyex1 : forall (X : Type) (x y z : X) (l j : list X),
      x :: y :: l = z :: j ->
      y :: l = x :: j ->
      x = y.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. intros X x y z l j eq1 eq2. inversion eq1. inversion eq2. rewrite -> H0. reflexivity. Qed.
 (** [] *)
 
 Theorem silly6 : forall (n : nat),
@@ -844,8 +843,7 @@ Example sillyex2 : forall (X : Type) (x y z : X) (l j : list X),
      x :: y :: l = [] ->
      y :: l = z :: j ->
      x = z.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. intros X x y z l j eq1 eq2. inversion eq1. Qed.
 (** [] *)
 
 (** コンストラクタの単射性が、[forall (n m : nat), S n = S m -> n = m]を示している一方で、これを逆に適用することで、普通の等式の証明をすることができれば、これまで出てきたいくつかのケースにも使えるでしょう。 *)
