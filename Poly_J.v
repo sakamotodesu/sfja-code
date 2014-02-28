@@ -881,7 +881,12 @@ Theorem beq_nat_eq' : forall m n,
   beq_nat n m = true -> n = m.
 Proof.
   intros m. induction m as [| m'].
-  (* FILL IN HERE *) Admitted.
+  intros n eq1. induction n as [| n']. 
+    reflexivity.
+    inversion eq1.
+  intros n eq1. induction n as [| n'].
+    inversion eq1.
+    apply eq_remove_S. apply IHm'. apply eq1. Qed.
 (** [] *)
 
 (** [inversion]のもう一つの側面を見てみましょう。以前にすでに証明済みのものですが、少し遠回りな書き方になっています。新しく追加された等号のせいで、少し等式に関する証明を追加する必要がありますし、これまでに出てきたタクティックを使う練習にもなります。 *)
@@ -909,14 +914,16 @@ Proof.
 Theorem beq_nat_0_l : forall n,
   true = beq_nat 0 n -> 0 = n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n eq1. induction n as [|n'].
+    reflexivity.
+    inversion eq1. Qed.
 
 Theorem beq_nat_0_r : forall n,
   true = beq_nat n 0 -> 0 = n.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+  intros n eq1. induction n as [|n'].
+    reflexivity.
+    inversion eq1. Qed.
 
 Theorem double_injective : forall n m,
      double n = double m ->
@@ -970,6 +977,12 @@ Theorem plus_n_n_injective : forall n m,
      n = m.
 Proof.
   intros n. induction n as [| n'].
+     intros m eq1. simpl in eq1. destruct m as [|m'].
+       reflexivity. inversion eq1.
+     intros m eq1. destruct m as [|m'].
+       inversion eq1.
+       rewrite <- plus_n_Sm in eq1. rewrite <- plus_n_Sm in eq1.
+       simpl in eq1. inversion eq1. apply eq_remove_S. apply IHn'. apply H0. Qed.
     (* ヒント: 補題plus_n_Smを使用します *)
     (* FILL IN HERE *) Admitted.
 (** [] *)
