@@ -984,7 +984,6 @@ Proof.
        rewrite <- plus_n_Sm in eq1. rewrite <- plus_n_Sm in eq1.
        simpl in eq1. inversion eq1. apply eq_remove_S. apply IHn'. apply H0. Qed.
     (* ヒント: 補題plus_n_Smを使用します *)
-    (* FILL IN HERE *) Admitted.
 (** [] *)
 
 
@@ -1016,18 +1015,22 @@ Proof.
 Theorem override_shadow : forall {X:Type} x1 x2 k1 k2 (f : nat->X),
   (override (override f k1 x2) k1 x1) k2 = (override f k1 x1) k2.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros X x1 x2 k1 k2 f. unfold override.
+    destruct (beq_nat k1 k2).
+      reflexivity.
+      reflexivity. Qed.
 (** [] *)
 
 (** **** 練習問題: ★★★, recommended (combine_split) *)
-(*
+
 Theorem combine_split : forall X Y (l : list (X * Y)) l1 l2,
   split l = (l1, l2) ->
   combine l1 l2 = l.
 Proof.
   intros X Y l. induction l as [| [x y] l'].
-  (* FILL IN HERE *) Admitted.
-*)
+    intros l1 l2 eq1. inversion eq1. simpl. reflexivity.
+    intros l1 l2 eq1. Admitted.
+
 (** [] *)
 
 (** **** 練習問題: ★★★, optional (split_combine) *)
