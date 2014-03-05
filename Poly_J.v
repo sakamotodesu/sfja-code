@@ -1099,7 +1099,10 @@ Theorem override_same : forall {X:Type} x1 k1 k2 (f : nat->X),
   f k1 = x1 ->
   (override f k1 x1) k2 = f k2.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros X x1 k1 k2 f H. unfold override.
+    remember (beq_nat k1 k2) as e1.
+    destruct (e1). apply beq_nat_eq in Heqe1. rewrite <- Heqe1. rewrite -> H. reflexivity.
+    reflexivity. Qed.
 (** [] *)
 
 (** **** 練習問題: ★★★, optional (filter_exercise) *)
@@ -1109,8 +1112,12 @@ Theorem filter_exercise : forall (X : Type) (test : X -> bool)
                              (x : X) (l lf : list X),
      filter test l = x :: lf ->
      test x = true.
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. induction l as [| n l'].
+  intros lf eq1. simpl in eq1. inversion eq1.
+  simpl. remember (test n) as t1. destruct (t1).
+    intros lf eq. inversion eq. rewrite <- H0. rewrite <- Heqt1. reflexivity.
+    apply IHl'. Qed.
+
 (** [] *)
 
 
