@@ -1027,14 +1027,22 @@ Theorem combine_split : forall X Y (l : list (X * Y)) l1 l2,
   split l = (l1, l2) ->
   combine l1 l2 = l.
 Proof.
+<<<<<<< Updated upstream
   intros X Y l. induction l as [| [x y] l'] .
    intros l1 l2 H. inversion H.  reflexivity.
    intros l1 l2 H. simpl in H. destruct (split l') as [xs ys].
    inversion H.
    simpl. rewrite -> (IHl' xs ys (eq_refl (xs,ys))).
    reflexivity. Qed.
+=======
+  intros X Y l. induction l as [| [x y] l'].
+    intros l1 l2 eq1. inversion eq1. simpl. reflexivity.
+    intros l1 l2 eq1. simpl in eq1. destruct (split l') as [xs ys].
+       inversion eq1. simpl. rewrite -> (IHl' xs ys (eq_refl (xs, ys))). reflexivity.
+Qed.
+>>>>>>> Stashed changes
 
-(** [] *)
+ (** [] *)
 
 (** **** 練習問題: ★★★, optional (split_combine) *)
 (** 思考練習: 我々はすでに、全ての型のリストのペアで[combine]が[split]の逆関数であることを証明しました。ではその逆の「[split]は[combine]の逆関数である」を示すことはできるでしょうか？
@@ -1044,6 +1052,10 @@ Proof.
     この定理をCoqで証明しなさい（なるべく[intros]を使うタイミングを遅らせ、帰納法の仮定を一般化させておくといいでしょう。 *)
 
 (* FILL IN HERE *)
+Theorem split_compine : forall X Y (l : list (X * Y)) l1 l2,
+  combine l1 l2 = l -> split l = (l1, l2).
+Proof.
+  induction l. Admitted.
 (** [] *)
 
 
@@ -1162,21 +1174,27 @@ Example trans_eq_exercise : forall (n m o p : nat),
      m = (minustwo o) ->
      (n + p) = m ->
      (n + p) = (minustwo o).
-Proof.
-  (* FILL IN HERE *) Admitted.
+Proof. 
+  intros m o n p eq1 eq2. symmetry in eq1. symmetry in eq2.
+  apply trans_eq with o. symmetry. apply eq2. symmetry. apply eq1. Qed.
 
 Theorem beq_nat_trans : forall n m p,
   true = beq_nat n m ->
   true = beq_nat m p ->
   true = beq_nat n p.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m p eq1 eq2.
+  apply beq_nat_eq in eq1. 
+  apply beq_nat_eq in eq2. 
+  rewrite -> eq1. rewrite -> eq2. simpl. apply beq_nat_refl. Qed.
+
 
 Theorem override_permute : forall {X:Type} x1 x2 k1 k2 k3 (f : nat->X),
   false = beq_nat k2 k1 ->
   (override (override f k2 x2) k1 x1) k3 = (override (override f k1 x1) k2 x2) k3.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros X x1 x2 k1 k2 k3 f eq1.Admitted.
+
 (** [] *)
 
 (* ################################################################## *)

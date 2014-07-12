@@ -1172,12 +1172,12 @@ intros l. induction l as [| n l'].
   simpl. rewrite -> plus_0_r. reflexivity. Qed.
 Theorem count_sum: forall (l1 l2 :bag),
   ( count  0 l1 ) + ( count 0 l2) = count  0 ( sum l1 l2).
-Proof.
+Proof. 
 intros l1 l2. induction l1 as [| n l1'].
   simpl. reflexivity.
   simpl. induction l2 as [| m l2'].
     simpl. rewrite <- IHl1'. simpl. rewrite -> plus_0_r. rewrite -> count_plus_0_r. reflexivity.
-    rewrite <- IHl1'. simpl. Admitted.
+    rewrite <- IHl1'.  auto. simpl. Admitted.
 (* FILL IN HERE *)
 
 (* **** Exercise: 4 stars, optional (rev_injective) *)
