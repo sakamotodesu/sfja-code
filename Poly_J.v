@@ -222,7 +222,7 @@ Example test_repeat1:
 
 Theorem nil_app : forall X:Type, forall l:list X,
   app [] l = l.
-Proof. intros l. simpl. reflexivity.
+Proof. intros l. simpl. reflexivity. Qed.
 
 Theorem rev_snoc : forall X : Type,
                      forall v : X,
@@ -1027,20 +1027,11 @@ Theorem combine_split : forall X Y (l : list (X * Y)) l1 l2,
   split l = (l1, l2) ->
   combine l1 l2 = l.
 Proof.
-<<<<<<< Updated upstream
-  intros X Y l. induction l as [| [x y] l'] .
-   intros l1 l2 H. inversion H.  reflexivity.
-   intros l1 l2 H. simpl in H. destruct (split l') as [xs ys].
-   inversion H.
-   simpl. rewrite -> (IHl' xs ys (eq_refl (xs,ys))).
-   reflexivity. Qed.
-=======
   intros X Y l. induction l as [| [x y] l'].
     intros l1 l2 eq1. inversion eq1. simpl. reflexivity.
     intros l1 l2 eq1. simpl in eq1. destruct (split l') as [xs ys].
        inversion eq1. simpl. rewrite -> (IHl' xs ys (eq_refl (xs, ys))). reflexivity.
 Qed.
->>>>>>> Stashed changes
 
  (** [] *)
 
@@ -1193,7 +1184,7 @@ Theorem override_permute : forall {X:Type} x1 x2 k1 k2 k3 (f : nat->X),
   false = beq_nat k2 k1 ->
   (override (override f k2 x2) k1 x1) k3 = (override (override f k1 x1) k2 x2) k3.
 Proof.
-  intros X x1 x2 k1 k2 k3 f eq1.Admitted.
+  intros X x1 x2 k1 k2 k3 f eq1. Admitted.
 
 (** [] *)
 
@@ -1270,14 +1261,16 @@ Proof. reflexivity. Qed.
 
 Theorem fold_length_correct : forall X (l : list X),
   fold_length l = length l.
-(* FILL IN HERE *) Admitted.
-(** [] *)
+Proof. 
+  intros X l. induction l as [|l'].
+    unfold fold_length. simpl. reflexivity.
+    unfold fold_length. simpl. rewrite <- IHl. unfold fold_length. reflexivity. Qed.
 
+(** [] *)
 (** **** 練習問題: ★★★, recommended (fold_map) *)
 (** [map]関数も[fold]を使って書くことができます。以下の[fold_map]を完成させなさい。 *)
-
 Definition fold_map {X Y:Type} (f : X -> Y) (l : list X) : list Y :=
-(* FILL IN HERE *) admit.
+ fold (fun x ys => cons (f x) ys) l [].
 
 (** [fold_map]の正しさを示す定理をCoqで書き、証明しなさい *)
 
@@ -1295,7 +1288,6 @@ Inductive mumble : Type :=
 Inductive grumble (X:Type) : Type :=
   | d : mumble -> grumble X
   | e : X -> grumble X.
-
 (** 次の式のうち、ある型[X]について[grumble X]の要素として正しく定義されているものはどれでしょうか。
       - [d (b a 5)]
       - [d mumble (b a 5)]
@@ -1306,6 +1298,10 @@ Inductive grumble (X:Type) : Type :=
       - [c]
 (* FILL IN HERE *)
 [] *)
+Check d mumble (b a 5).
+Check d bool (b a 5).
+Check e bool true.
+Check e mumble (b c 0).
 
 (** **** 練習問題: ★★, optional (baz_num_elts) *)
 (** 次の、機能的に定義された型をよく観察してください。 *)
@@ -1315,7 +1311,6 @@ Inductive baz : Type :=
    | y : baz -> bool -> baz.
 
 (** 型[baz]はいくつの要素を持つことができるでしょうか？
-(* FILL IN HERE *)
 [] *)
 
 End MumbleBaz.
@@ -1345,8 +1340,74 @@ End MumbleBaz.
 
     そして、[existsb']と[existsb]が同じ振る舞いをすることを証明しなさい。
 *)
+Fixpoint forallb {X : Type} (f :  X -> bool) (l : list X):=
+  match l with 
+  | [] => true
+  | h :: t => match f h with
+              | false => false
+              | true => forallb f t
+             end
+  end.
+Example test_forallb1: forallb oddb [1,3,5,7,9] = true.
+  Proof. simpl. reflexivity. Qed.
 
-(* FILL IN HERE *)
+Example test_forallb2: forallb negb [false,false] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_forallb3: forallb evenb [0,2,4,5] = false.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_forallb4: forallb (beq_nat 5) [] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Fixpoint existsb {X : Type} (f : X -> bool) (l : list X):=
+  match l with 
+  | [] => false
+  | h :: t => match f h with
+              | true => true
+              | false => existsb f t
+             end
+  end.
+
+Example test_existsb1: existsb (beq_nat 5) [0,2,3,6] = false.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb2: existsb (andb true) [true,true,false] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb3: existsb oddb [1,0,0,0,0,3] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb4: existsb evenb [] = false.
+  Proof. simpl. reflexivity. Qed.
+
+Definition existsb' {X : Type} (f : X -> bool) (l : list X): bool:=
+   negb ( forallb (fun a => negb (f a) ) l ).
+
+Example test_existsb'1: existsb' (beq_nat 5) [0,2,3,6] = false.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb'2: existsb' (andb true) [true,true,false] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb'3: existsb' oddb [1,0,0,0,0,3] = true.
+  Proof. simpl. reflexivity. Qed.
+
+Example test_existsb'4: existsb' evenb [] = false.
+  Proof. simpl. reflexivity. Qed.
+
+
+Theorem existsbrefl: forall X (f: X -> bool) (l : list X),
+  existsb f l = existsb' f l.
+  Proof.
+    induction l as [|x l'].
+      reflexivity.
+      unfold existsb'.
+      simpl.
+      destruct (f x).
+        simpl. reflexivity.
+        simpl. rewrite -> IHl'. reflexivity. Qed.
+
 (** [] *)
 
 (** **** 練習問題: ★★, optional (index_informal) *)
