@@ -204,7 +204,20 @@ Theorem plus_n_n_injective_take2 : forall n m,
      n + n = m + m ->
      n = m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m.
+  generalize dependent n.
+  induction m as [|m'].
+    destruct n as [|n'].
+      reflexivity. 
+    intros eq. inversion eq.
+    destruct n as [|n'].
+      intros eq. inversion eq.
+      intros eq. inversion eq.
+      rewrite <- plus_n_Sm in H0. rewrite <- plus_n_Sm in H0.
+      inversion H0.
+      apply IHm' in H1.
+      rewrite -> H1. reflexivity. Qed.
+
 
 (** [l]に関する帰納法で示しなさい。 *)
 
@@ -212,7 +225,13 @@ Theorem index_after_last: forall (n : nat) (X : Type) (l : list X),
      length l = n ->
      index (S n) l = None.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n X l.
+  generalize dependent n.
+  induction l as [|x l'].
+    intros n. reflexivity.
+    intros n eq. destruct n as [|n'].
+      inversion eq.
+      apply IHl'. inversion eq. reflexivity. Qed.
 (** [] *)
 
 (** **** 練習問題: ★★★, optional (index_after_last_informal) *)
