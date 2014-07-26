@@ -691,8 +691,10 @@ Proof.
 Theorem plus_one_r' : forall n:nat,
   n + 1 = S n.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  apply nat_ind.
+  simpl. reflexivity.
+  intros n eq1. simpl. rewrite -> eq1. reflexivity. Qed.
+ (** [] *)
 
 (* The induction principles that Coq generates for other
     datatypes defined with [Inductive] follow a similar pattern. If we
@@ -780,6 +782,7 @@ Inductive natlist1 : Type :=
 
 (* Now what will the induction principle look like? *)
 (** このとき、帰納法の原理はどのようになるでしょうか？ *)
+Check natlist1_ind.
 (** [] *)
 
 (* From these examples, we can extract this general rule:

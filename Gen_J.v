@@ -233,7 +233,7 @@ Proof.
       inversion eq.
       apply IHl'. inversion eq. reflexivity. Qed.
 (** [] *)
-
+Print snoc.
 (** **** 練習問題: ★★★, optional (index_after_last_informal) *)
 (** [index_after_last]のCoqによる証明に対応する非形式的な証明を書きなさい。
 
@@ -252,7 +252,14 @@ Theorem length_snoc''' : forall (n : nat) (X : Type)
      length l = n ->
      length (snoc l v) = S n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+   intros n X v l.
+   generalize dependent n.
+   induction l as [| x l'].
+     simpl. intros n eq. rewrite -> eq. reflexivity.
+     destruct n as [|n'].
+       intros eq. inversion eq.
+       intros eq. inversion eq.  rewrite -> H0.
+       apply IHl' in H0. simpl. rewrite -> H0. reflexivity. Qed.
 (** [] *)
 
 (** **** 練習問題: ★★★, optional (app_length_cons) *)
@@ -263,8 +270,15 @@ Theorem app_length_cons : forall (X : Type) (l1 l2 : list X)
      length (l1 ++ (x :: l2)) = n ->
      S (length (l1 ++ l2)) = n.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros X l1 l2 x.
+  induction l1 as [|h l'].
+    simpl. intros n eq.  apply eq.
+      destruct n as [|n'].
+        simpl. intros eq. inversion eq.
+        simpl. intros eq. inversion eq.
+        rewrite -> H0.
+        apply IHl' in H0.
+        rewrite -> H0. reflexivity. Qed.
 
 (** **** 練習問題: ★★★★, optional (app_length_twice) *)
 (** [app_length]を使わずに[l1]に関する帰納法で示しなさい。 *)
@@ -273,5 +287,12 @@ Theorem app_length_twice : forall (X:Type) (n:nat) (l:list X),
      length l = n ->
      length (l ++ l) = n + n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros X n l.
+  generalize dependent n.
+  induction l as [|x l'].
+    simpl. intros n eq. rewrite <- eq. simpl.  reflexivity.
+    destruct n as [|n'].
+      simpl. intros eq. inversion eq.
+      simpl. intros eq. inversion eq. apply IHl' in H0. Admitted.
+
 (** [] *)
