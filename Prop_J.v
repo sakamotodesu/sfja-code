@@ -830,8 +830,9 @@ Check natlist1_ind.
     [ExSet] の帰納的な定義を示しなさい。 *)
 
 Inductive ExSet : Type :=
-  (* FILL IN HERE *)
-.
+  | con1 : bool -> ExSet
+  | con2 : nat -> ExSet -> ExSet.
+Check ExSet_ind.
 
 (** [] *)
 
@@ -898,6 +899,13 @@ Inductive ExSet : Type :=
 Inductive tree (X:Type) : Type :=
   | leaf : X -> tree X
   | node : tree X -> tree X -> tree X.
+(* 
+  tree_ind :
+    forall (X : Type) (P : tree X -> Prop),
+    (forall (x : X)　, P (leaf X x)) ->
+    (forall t : tree X, P t -> forall t0 : tree X, P t0 -> P (node X t t0)) ->
+    forall t : tree X, P t
+*)
 Check tree_ind.
 (** [] *)
 
@@ -926,8 +934,13 @@ Check tree_ind.
             forall m : mytype X, P m
 ]]
 *)
-(** [] *)
 
+Inductive mytype (X : Type) : Type :=
+ | constr1 : X -> mytype X
+ | constr2 : nat -> mytype X
+ | constr3 : mytype X -> nat -> mytype X.
+Check mytype_ind.
+ 
 (* **** Exercise: 1 star, optional (foo) *)
 (** **** 練習問題: ★, optional (foo) *)
 (* Find an inductive definition that gives rise to the
@@ -953,8 +966,11 @@ Check tree_ind.
              forall f2 : foo X Y, P f2
 ]]
 *)
-(** [] *)
-
+Inductive foo ( X Y : Type ) :Type :=
+  | bar : X -> foo X Y
+  | baz : Y -> foo X Y
+  | quux : (nat -> foo X Y ) -> foo X Y.
+Check foo_ind.
 (* **** Exercise: 1 star, optional (foo') *)
 (** **** 練習問題: ★, optional (foo') *)
 
@@ -983,12 +999,12 @@ Inductive foo' (X:Type) : Type :=
      foo'_ind :
         forall (X : Type) (P : foo' X -> Prop),
               (forall (l : list X) (f : foo' X),
-                    _______________________ ->
-                    _______________________   ) ->
-             ___________________________________________ ->
-             forall f : foo' X, ________________________
+                    P f -> P (C1 X x l f)) ->
+                    P ( C2 X) ->
+             forall f : foo' X,  P f
 ]]
 *)
+Check foo'_ind.
 
 (** [] *)
 
