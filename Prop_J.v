@@ -1142,9 +1142,10 @@ Inductive ev : nat -> Prop :=
 Theorem four_ev' :
   ev 4.
 Proof.
-  (* FILL IN HERE *) Admitted.
-Definition four_ev : ev 4 :=
-  (* FILL IN HERE *) admit.
+apply ev_SS. apply ev_SS. apply ev_0. Qed.
+
+Definition four_ev : ev 4 := ev_SS 2 (ev_SS 0 ev_0).
+Print four_ev.
 (** [] *)
 
 (* **** Exercise: 2 stars (ev_plus4) *)
@@ -1152,12 +1153,16 @@ Definition four_ev : ev 4 :=
 (*  Give a tactic proof and a proof object showing that, if [n] is
     even, then so is [4+n]. *)
 (** [n] が偶数ならば [4+n] も偶数であることをタクティックによる証明と証明オブジェクトによる証明で示しなさい。 *)
-Definition ev_plus4 : forall n, ev n -> ev (4 + n) :=
-  (* FILL IN HERE *) admit.
+Definition ev_plus4 : forall n, ev n -> ev (4 + n) := 
+fun n ev => ev_SS (S (S n)) (ev_SS n ev).
+Print ev_plus4.
+
 Theorem ev_plus4' : forall n,
   ev n -> ev (4 + n).
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n h.
+apply ev_SS. apply ev_SS. apply h. Qed.
+Print ev_plus4'.
 (** [] *)
 
 (* **** Exercise: 2 stars (double_even) *)
@@ -1168,7 +1173,10 @@ Proof.
 Theorem double_even : forall n,
   ev (double n).
 Proof.
-  (* FILL IN HERE *) Admitted.
+induction n as [|n'].
+simpl. apply ev_0.
+simpl. apply ev_SS. apply IHn'. Qed.
+
 (** [] *)
 
 (* **** Exercise: 4 stars, optional (double_even_pfobj) *)
@@ -1244,7 +1252,13 @@ Proof.
 
 (* What happens if we try to [destruct] on [n] instead of [E]? *)
 (** [E] の代わりに [n] に対して [destruct] するとどうなるでしょうか? *)
-
+Theorem ev_minus2': forall n,
+  ev n -> ev (pred (pred n)).
+Proof.
+intros n E.
+destruct n as [|n'].
+simpl. apply E.
+simpl.  Admitted.
 (** [] *)
 (* [] *)
 
@@ -1277,6 +1291,12 @@ Proof.
 (* Could this proof be carried out by induction on [n] instead
     of [E]? *)
 (** [] *)
+Theorem ev_even' : forall n, ev n -> even n.
+Proof.
+intros n E.
+induction n as [|n'].
+unfold even. reflexivity.
+unfold even. Admitted.
 (* [] *)
 
 (*  The induction principle for inductively defined propositions does
@@ -1334,7 +1354,10 @@ Proof.
 Theorem ev_sum : forall n m,
    ev n -> ev m -> ev (n+m).
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n m E1 E2.
+induction E1 as [|n' E1'].
+simpl. apply E2.
+simpl. apply ev_SS. apply IHE1'. Qed.
 (** [] *)
 
 
@@ -1410,7 +1433,8 @@ Proof.
 Theorem SSSSev_even : forall n,
   ev (S (S (S (S n)))) -> ev n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n E.
+inversion E. inversion H0. apply H2. Qed.
 
 (* The [inversion] tactic can also be used to derive goals by showing
     the absurdity of a hypothesis. *)
@@ -1420,7 +1444,10 @@ Proof.
 Theorem even5_nonsense :
   ev 5 -> 2 + 2 = 9.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros E.
+inversion E.
+inversion H0.
+inversion H2. Qed.
 (** [] *)
 
 (* We can generally use [inversion] instead of [destruct] on
