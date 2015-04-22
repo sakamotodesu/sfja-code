@@ -1252,7 +1252,7 @@ Proof.
 
 (* What happens if we try to [destruct] on [n] instead of [E]? *)
 (** [E] の代わりに [n] に対して [destruct] するとどうなるでしょうか? *)
-Theorem ev_minus2': forall n,
+Theorem ev_minus2_n: forall n,
   ev n -> ev (pred (pred n)).
 Proof.
 intros n E.
@@ -1477,7 +1477,13 @@ Proof.
 Theorem ev_ev_even : forall n m,
   ev (n+m) -> ev n -> ev m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n m E1 E2. 
+generalize dependent E1.
+generalize dependent m.
+induction E2 as [| n' E'].
+intros m E. simpl in E. apply E.
+simpl. intros m E.  inversion E. apply (IHE' m H0). Qed.
+
 (** [] *)
 
 (* **** Exercise: 3 stars, optional (ev_plus_plus) *)
@@ -1493,7 +1499,28 @@ Proof.
 Theorem ev_plus_plus : forall n m p,
   ev (n+m) -> ev (n+p) -> ev (m+p).
 Proof.
-  (* FILL IN HERE *) Admitted.
+ intros n m p Enm Enp.
+  apply ev_sum with (n:=n+m) (m:=n+p) in Enm.
+  (* (n + m) + (n + p) *)
+  replace ((n+m) + (n+p)) with ((n + n) + (m + p)) in Enm.
+  replace (n+n) with (double n) in Enm.
+  apply ev_ev_even with (m:=m+p) in Enm.
+  apply Enm.
+  replace (double n + (m + p) + (m + p)) with (double n + ((m + p) + (m + p))).
+  replace  (m + p + (m + p)) with (double (m + p)).
+  apply ev_sum.
+  apply double_even.
+  apply double_even.
+  apply double_plus with (n:=m+p).
+  apply plus_assoc with (n:=double n).
+  apply double_plus.
+  rewrite <- plus_assoc.
+  replace (n+(m+p)) with (m+(n+ p)).
+  rewrite plus_assoc.
+  reflexivity.
+  apply plus_swap'.
+  apply Enp.
+Qed.
 (** [] *)
 
 (* ##################################################### *)
